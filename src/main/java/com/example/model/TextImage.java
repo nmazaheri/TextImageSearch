@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * an ASCII image representation used for searching through
  */
 public class TextImage {
 
@@ -60,17 +60,9 @@ public class TextImage {
 		return height;
 	}
 
-	public int getHalfWidth() {
-		return width / 2;
-	}
-
-	public int getHalfHeight() {
-		return height / 2;
-	}
-
 	public TextImage getSubsection(int x1, int y1, int x2, int y2) {
-//		System.out.println(x1 + "," + y1 + "," + x2 + "," + y2);
-		if (!isValidPoint(x1, y1) || !isValidPoint(x2, y2)) {
+		if (!isValidPoint(x1, y1) || !isValidPoint(x2, y2) || x1 > x2 || y1 > y2) {
+			LOGGER.warn("invalid subsection request; [{}, {}], [{}, {}]", x1, y1, x2, y2);
 			return null;
 		}
 

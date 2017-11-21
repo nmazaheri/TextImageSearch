@@ -12,10 +12,10 @@ import com.example.model.ConfidenceValue;
 import com.example.model.PatternTextImage;
 
 /**
- *
+ * Renders a .png image using confidence values. Can handle unique colors using patterns and enumerated {@link ConfidenceValue}
  */
 public class ImageCreator {
-	public static final String BMP_EXTENSION = "bmp";
+	private static final String IMG_EXTENSION = "png";
 	private ConfidenceStats stats;
 	private String writePath;
 
@@ -27,36 +27,35 @@ public class ImageCreator {
 	public void writeImage(PatternTextImage pattern, ConfidenceResult confidenceResult, String uniqueFileId) throws IOException {
 		final BufferedImage image = createBufferedImage(confidenceResult, pattern);
 		String filePath = generateImagePath(pattern.getFilepath(), uniqueFileId);
-		ImageIO.write(image, BMP_EXTENSION, new File(filePath));
+		ImageIO.write(image, IMG_EXTENSION, new File(filePath));
 	}
 
 	private String generateImagePath(String filePath, String name) {
-		return writePath + filePath + "_" + name + "." + BMP_EXTENSION;
+		return writePath + filePath + "_" + name + "." + IMG_EXTENSION;
 	}
 
-	private BufferedImage createBufferedImage(ConfidenceResult confidenceResult, PatternTextImage p) {
+	private BufferedImage createBufferedImage(ConfidenceResult confidenceResult, PatternTextImage pattern) {
 		final BufferedImage image = new BufferedImage(confidenceResult.getWidth(), confidenceResult.getHeight(), BufferedImage.TYPE_INT_RGB);
 
 		int[][] result = confidenceResult.getArr();
 		for (int i = 0; i < result.length; i++) {
 			for (int j = 0; j < result[i].length; j++) {
-				final int val = result[i][j];
-				image.setRGB(i, j, getColorVal(val, p));
+				final int colorVal = getColorVal(result[i][j], pattern);
+				image.setRGB(i, j, colorVal);
 			}
 		}
-
 		return image;
 	}
 
-	private int getColorVal(int val, PatternTextImage p) {
-		Color color = getColor(val, p, stats.getThreshold());
+	private int getColorVal(int val, PatternTextImage pattern) {
+		Color color = getColor(val, pattern, stats.getThreshold());
 		return color.getRGB();
 	}
 
-	private Color getColor(int val, PatternTextImage p, int threshold) {
+	private Color getColor(int val, PatternTextImage pattern, int threshold) {
 		final ConfidenceValue e = ConfidenceValue.convert(val);
 		if (e != null) {
-			return p.getColor(e);
+			return pattern.getColor(e);
 		}
 
 		if (val < threshold) {
@@ -65,7 +64,6 @@ public class ImageCreator {
 
 		int colorVal = stats.applyLinearScale(val);
 		return new Color(colorVal, colorVal, 0);
-
 	}
 
 }

@@ -4,7 +4,7 @@ import com.example.model.ConfidenceResult;
 import com.example.model.ConfidenceValue;
 
 /**
- *
+ * Identifies lone points and points with lots of neighbors. Capable of doing multiple passes
  */
 public class ConfidenceFilter {
 	private Integer threshold;
@@ -13,12 +13,12 @@ public class ConfidenceFilter {
 		this.threshold = threshold;
 	}
 
-	public void filter(ConfidenceResult confidenceResult, int numOfPass, int activeNeighbors) {
-		if (numOfPass < 1 || threshold == null) {
+	public void filter(ConfidenceResult confidenceResult, int numOfPass, int minActiveNeighbors) {
+		if (numOfPass < 1 || threshold == null || minActiveNeighbors < 1 || minActiveNeighbors > 8) {
 			return;
 		}
 		for (int i = 0; i < numOfPass; i++) {
-			removeLonePoints(confidenceResult, activeNeighbors);
+			removeLonePoints(confidenceResult, minActiveNeighbors);
 		}
 	}
 

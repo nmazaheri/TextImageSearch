@@ -4,12 +4,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.example.model.ConfidenceResult;
-import com.example.model.ConfidenceValue;
 import com.example.model.PatternTextImage;
 import com.example.model.TextImage;
 
 /**
- *
+ * Used to compare a patterns against an image and outputs a ConfidenceResult
  */
 public class ConfidenceFinder {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ConfidenceFinder.class);
@@ -22,39 +21,65 @@ public class ConfidenceFinder {
 		this.confidenceStats = confidenceStats;
 	}
 
-	public ConfidenceResult createConfidenceArray(PatternTextImage p) {
-		int height = image.getHeight() + 2 * p.getHeight();
-		int width = image.getWidth() + 2 * p.getWidth();
+	public ConfidenceResult createConfidenceArray(PatternTextImage pattern) {
+		int height = image.getHeight() + pattern.getHeight();
+		int width = image.getWidth() + pattern.getWidth();
 
 		ConfidenceResult confidenceResult = new ConfidenceResult(width, height);
 		int[][] result = confidenceResult.getArr();
 		for (int i = 0; i < result.length; i++) {
 			for (int j = 0; j < result[i].length; j++) {
-				updateConfidencePoint(p, result, i, j);
+				result[i][j] = getConfidenceValue(pattern, i, j);
 			}
 		}
-
 		confidenceStats.print();
 		return confidenceResult;
 	}
 
-	protected void updateConfidencePoint(PatternTextImage pattern, int[][] result, int i, int j) {
-//		TextImage patternSubsection = pattern.getSubsection(i - pattern.getHalfWidth(), j - pattern.getHalfWidth(), pattern.getWidth() + i, pattern.getHeight() + j);
-//		TextImage imageSubsection = image.getSubsection(i - pattern.getHalfHeight(), j - pattern.getHalfHeight(), i + pattern.getHalfWidth(), j + pattern.getHalfHeight());
-//		TextImage patternSubsection = pattern.getSubsection(0, 0, pattern.getWidth(), pattern.getHeight());
-//		TextImage imageSubsection = image.getSubsection(i, j, i + pattern.getWidth(), j + pattern.getHeight());
-		int x1 = i - pattern.getWidth();
-		int y1 = j - pattern.getHeight();
-		TextImage imageSubsection = image.getSubsection(x1, y1, x1 + pattern.getWidth(), y1 + pattern.getHeight());
-		TextImage patternSubsection = pattern.getSubsection(0, 0, pattern.getWidth(), pattern.getHeight());
+	protected int getConfidenceValue(PatternTextImage pattern, int i, int j) {
+		int imageX1 = Math.max(i - pattern.getWidth(), 0);
+		int imageY1 = Math.max(j - pattern.getHeight(), 0);
 
-		if (patternSubsection == null || imageSubsection == null) {
-			result[i][j] = ConfidenceValue.UNKNOWN.getValue();
+		int patternX1, patternY1, patternX2, patternY2, imageX2, imageY2;
+		if (i < pattern.getWidth()) {
+			// outside left quadrant
+			patternX1 = pattern.getWidth() - i;
+			patternX2 = pattern.getWidth();
+			imageX2 = patternX2 - patternX1;
+		} else if (i > image.getWidth()) {
+			// outside right quadrant
+			imageX2 = image.getWidth();
+			patternX1 = 0;
+			patternX2 = imageX2 - imageX1;
 		} else {
-			result[i][j] = calculateMatchCount(patternSubsection, imageSubsection);
+			// inside
+			imageX2 = imageX1 + pattern.getWidth();
+			patternX1 = 0;
+			patternX2 = pattern.getWidth();
 		}
+
+		if (j < pattern.getHeight()) {
+			// top quadrant
+			patternY1 = pattern.getHeight() - j;
+			patternY2 = pattern.getHeight();
+			imageY2 = patternY2 - patternY1;
+		} else if (j > image.getHeight()) {
+			// bottom quadrant
+			imageY2 = image.getHeight();
+			patternY1 = 0;
+			patternY2 = imageY2 - imageY1;
+		} else {
+			// inside
+			imageY2 = imageY1 + pattern.getHeight();
+			patternY1 = 0;
+			patternY2 = pattern.getHeight();
+		}
+
+		TextImage imageSubsection = image.getSubsection(imageX1, imageY1, imageX2, imageY2);
+		TextImage patternSubsection = pattern.getSubsection(patternX1, patternY1, patternX2, patternY2);
+		return calculateMatchCount(patternSubsection, imageSubsection);
 	}
-	
+
 	protected int calculateMatchCount(TextImage a, TextImage b) {
 		int confidenceValue = 0;
 

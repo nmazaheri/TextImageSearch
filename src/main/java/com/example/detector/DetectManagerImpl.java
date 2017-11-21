@@ -24,7 +24,7 @@ public class DetectManagerImpl implements DetectManager {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DetectManagerImpl.class);
 
 	@Override
-	public void process(List<PatternTextImage> patterns, String writePath, TextImage image) throws IOException {
+	public void process(List<PatternTextImage> patterns, TextImage image, String writePath) throws IOException {
 		for (PatternTextImage p : patterns) {
 			handlePattern(image, p, writePath);
 		}
@@ -37,9 +37,9 @@ public class DetectManagerImpl implements DetectManager {
 		ImageCreator imageCreator = new ImageCreator(confidenceStats, writePath);
 		imageCreator.writeImage(p, confidenceResult, "original");
 		ConfidenceFilter confidenceFilter = new ConfidenceFilter(confidenceStats.getThreshold());
-		confidenceFilter.enhance(confidenceResult, 5);
+		confidenceFilter.enhance(confidenceResult, 4);
 		imageCreator.writeImage(p, confidenceResult, "enhanced");
-		confidenceFilter.filter(confidenceResult, 1, 6);
+		confidenceFilter.filter(confidenceResult, 3, 6);
 		LOGGER.debug(Arrays.deepToString(confidenceResult.getArr()));
 		imageCreator.writeImage(p, confidenceResult, "final");
 	}

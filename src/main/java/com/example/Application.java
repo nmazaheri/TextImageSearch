@@ -12,24 +12,23 @@ import com.example.model.PatternTextImage;
 import com.example.model.TextImage;
 
 /**
- *
+ * Main application
  */
 public class Application {
-	private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
 	public static final String IMAGE_NAME = "image";
 	public static final String PATTERN1_NAME = "pattern1";
 	public static final String PATTERN2_NAME = "pattern2";
 	public static final String DESTINATION_PATH = "/Users/nmazaheri/Documents/git/TextImageSearch/";
+	private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
 
 	public static void main(String[] args) throws Exception {
 		LOGGER.info("Starting");
 		TextImage image = new TextImage(IMAGE_NAME);
 		PatternTextImage pattern1 = new PatternTextImage(PATTERN1_NAME);
 		PatternTextImage pattern2 = new PatternTextImage(PATTERN2_NAME);
-		pattern2.setEnhanceColor(Color.YELLOW);
 		pattern2.setFilterColor(Color.PINK);
 		DetectManager detectManager = new DetectManagerImpl();
-		detectManager.process(Arrays.asList(pattern1, pattern2), DESTINATION_PATH, image);
+		detectManager.process(Arrays.asList(pattern1, pattern2), image, DESTINATION_PATH);
 		LOGGER.info("Finished");
 	}
 

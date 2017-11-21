@@ -1,7 +1,8 @@
 package com.example.model;
 
 /**
- *
+ * Contains confidence values where each coordinate represents a pixel location and the value represents how good of a
+ * match it is
  */
 public class ConfidenceResult {
 	private int[][] arr;

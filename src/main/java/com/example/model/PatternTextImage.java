@@ -3,9 +3,10 @@ package com.example.model;
 import java.awt.*;
 
 /**
- *
+ * an ASCII image representation used for patterns. Contains colors for image rendering.
  */
 public class PatternTextImage extends TextImage {
+	private static final Color UNKNOWN_COLOR = Color.GRAY;
 	private Color filterColor = Color.RED;
 	private Color enhanceColor = Color.WHITE;
 	private String filepath;
@@ -34,7 +35,7 @@ public class PatternTextImage extends TextImage {
 			case BEST_MATCH:
 				return enhanceColor;
 			case UNKNOWN:
-				return Color.BLACK;
+				return UNKNOWN_COLOR;
 		}
 		return null;
 	}

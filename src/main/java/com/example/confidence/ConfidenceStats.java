@@ -5,7 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * Contains statistics on all confidence values
  */
 public class ConfidenceStats {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ConfidenceStats.class);
@@ -20,7 +20,7 @@ public class ConfidenceStats {
 	}
 
 	public int getThreshold() {
-		return (int) stats.getMean() + (int) stats.getStandardDeviation() * 2;
+		return (int) stats.getMean() + (int) stats.getStandardDeviation() + (int) stats.getStandardDeviation() / 3;
 	}
 
 	public int applyLinearScale(int val) {
