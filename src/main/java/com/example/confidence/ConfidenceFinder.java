@@ -12,6 +12,7 @@ import com.example.model.TextImage;
  */
 public class ConfidenceFinder {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ConfidenceFinder.class);
+	public static final int MIN_IMAGE_LENGTH_TO_CONSIDER = 40;
 
 	private TextImage image;
 	private ConfidenceStats confidenceStats;
@@ -26,7 +27,7 @@ public class ConfidenceFinder {
 		int width = image.getWidth() + pattern.getWidth();
 
 		ConfidenceResult confidenceResult = new ConfidenceResult(width, height);
-		int[][] result = confidenceResult.getArr();
+		double[][] result = confidenceResult.getArr();
 		for (int i = 0; i < result.length; i++) {
 			for (int j = 0; j < result[i].length; j++) {
 				result[i][j] = getConfidenceValue(pattern, i, j);
@@ -36,7 +37,7 @@ public class ConfidenceFinder {
 		return confidenceResult;
 	}
 
-	protected int getConfidenceValue(PatternTextImage pattern, int i, int j) {
+	protected double getConfidenceValue(PatternTextImage pattern, int i, int j) {
 		int imageX1 = Math.max(i - pattern.getWidth(), 0);
 		int imageY1 = Math.max(j - pattern.getHeight(), 0);
 
@@ -80,12 +81,15 @@ public class ConfidenceFinder {
 		return calculateMatchCount(patternSubsection, imageSubsection);
 	}
 
-	protected int calculateMatchCount(TextImage a, TextImage b) {
+	protected double calculateMatchCount(TextImage a, TextImage b) {
 		int confidenceValue = 0;
 
 		if (a.getImage().length != b.getImage().length) {
 			LOGGER.warn("all comparisons must be equal size to compare");
 			return confidenceValue;
+		}
+		if (a.getImage().length < MIN_IMAGE_LENGTH_TO_CONSIDER) {
+			return 0;
 		}
 		for (int i = 0; i < a.getImage().length; i++) {
 			if (a.getImage()[i] == b.getImage()[i]) {
@@ -93,7 +97,8 @@ public class ConfidenceFinder {
 			}
 		}
 
-		confidenceStats.update(confidenceValue);
-		return confidenceValue;
+		double matchPercentage = (double) confidenceValue / a.getImage().length;
+		confidenceStats.update(matchPercentage);
+		return matchPercentage;
 	}
 }

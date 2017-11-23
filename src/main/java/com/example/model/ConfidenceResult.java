@@ -5,17 +5,17 @@ package com.example.model;
  * match it is
  */
 public class ConfidenceResult {
-	private int[][] arr;
+	private double[][] arr;
 	private int width;
 	private int height;
 
 	public ConfidenceResult(int width, int height) {
-		this.arr = new int[width][height];
+		this.arr = new double[width][height];
 		this.width = width;
 		this.height = height;
 	}
 
-	public int[][] getArr() {
+	public double[][] getArr() {
 		return arr;
 	}
 

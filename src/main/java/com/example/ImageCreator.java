@@ -37,7 +37,7 @@ public class ImageCreator {
 	private BufferedImage createBufferedImage(ConfidenceResult confidenceResult, PatternTextImage pattern) {
 		final BufferedImage image = new BufferedImage(confidenceResult.getWidth(), confidenceResult.getHeight(), BufferedImage.TYPE_INT_RGB);
 
-		int[][] result = confidenceResult.getArr();
+		double[][] result = confidenceResult.getArr();
 		for (int i = 0; i < result.length; i++) {
 			for (int j = 0; j < result[i].length; j++) {
 				final int colorVal = getColorVal(result[i][j], pattern);
@@ -47,13 +47,13 @@ public class ImageCreator {
 		return image;
 	}
 
-	private int getColorVal(int val, PatternTextImage pattern) {
+	private int getColorVal(double val, PatternTextImage pattern) {
 		Color color = getColor(val, pattern, stats.getThreshold());
 		return color.getRGB();
 	}
 
-	private Color getColor(int val, PatternTextImage pattern, int threshold) {
-		final ConfidenceValue e = ConfidenceValue.convert(val);
+	private Color getColor(double val, PatternTextImage pattern, double threshold) {
+		final ConfidenceValue e = ConfidenceValue.convert((int) val);
 		if (e != null) {
 			return pattern.getColor(e);
 		}
@@ -62,7 +62,7 @@ public class ImageCreator {
 			return Color.BLACK;
 		}
 
-		int colorVal = stats.applyLinearScale(val);
+		int colorVal = (int) Math.round(val * 255);
 		return new Color(colorVal, colorVal, 0);
 	}
 

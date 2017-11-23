@@ -36,9 +36,9 @@ public class DetectManagerImpl implements DetectManager {
 		ConfidenceResult confidenceResult = confidenceFinder.createConfidenceArray(p);
 		ImageCreator imageCreator = new ImageCreator(confidenceStats, writePath);
 		imageCreator.writeImage(p, confidenceResult, "original");
+		LOGGER.debug(Arrays.deepToString(confidenceResult.getArr()));
 		ConfidenceFilter confidenceFilter = new ConfidenceFilter(confidenceStats.getThreshold());
 		confidenceFilter.enhance(confidenceResult, 4);
-		imageCreator.writeImage(p, confidenceResult, "enhanced");
 		confidenceFilter.filter(confidenceResult, 3, 6);
 		LOGGER.debug(Arrays.deepToString(confidenceResult.getArr()));
 		imageCreator.writeImage(p, confidenceResult, "final");

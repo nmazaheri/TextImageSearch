@@ -7,9 +7,9 @@ import com.example.model.ConfidenceValue;
  * Identifies lone points and points with lots of neighbors. Capable of doing multiple passes
  */
 public class ConfidenceFilter {
-	private Integer threshold;
+	private Double threshold;
 
-	public ConfidenceFilter(int threshold) {
+	public ConfidenceFilter(double threshold) {
 		this.threshold = threshold;
 	}
 
@@ -23,7 +23,7 @@ public class ConfidenceFilter {
 	}
 
 	private void removeLonePoints(ConfidenceResult confidenceResult, int minActiveNeighbors) {
-		final int[][] result = confidenceResult.getArr();
+		final double[][] result = confidenceResult.getArr();
 		for (int i = 1; i < result.length - 1; i++) {
 			for (int j = 1; j < result[i].length - 1; j++) {
 
@@ -67,7 +67,7 @@ public class ConfidenceFilter {
 			return;
 		}
 
-		final int[][] result = confidenceResult.getArr();
+		final double[][] result = confidenceResult.getArr();
 		for (int i = 1; i < result.length - 1; i++) {
 			for (int j = 1; j < result[i].length - 1; j++) {
 
