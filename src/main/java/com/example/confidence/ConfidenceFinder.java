@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.example.model.ConfidenceResult;
+import com.example.model.ConfidenceValue;
 import com.example.model.PatternTextImage;
 import com.example.model.TextImage;
 
@@ -12,7 +13,7 @@ import com.example.model.TextImage;
  */
 public class ConfidenceFinder {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ConfidenceFinder.class);
-	public static final int MIN_IMAGE_LENGTH_TO_CONSIDER = 40;
+	public static final double MIN_PATTERN_SUBSECTION_PERCENTAGE = 0.4;
 
 	private TextImage image;
 	private ConfidenceStats confidenceStats;
@@ -78,18 +79,18 @@ public class ConfidenceFinder {
 
 		TextImage imageSubsection = image.getSubsection(imageX1, imageY1, imageX2, imageY2);
 		TextImage patternSubsection = pattern.getSubsection(patternX1, patternY1, patternX2, patternY2);
-		return calculateMatchCount(patternSubsection, imageSubsection);
+		return calculateMatchCount(patternSubsection, imageSubsection, pattern);
 	}
 
-	protected double calculateMatchCount(TextImage a, TextImage b) {
+	protected double calculateMatchCount(TextImage a, TextImage b, PatternTextImage p) {
 		int confidenceValue = 0;
 
 		if (a.getImage().length != b.getImage().length) {
 			LOGGER.warn("all comparisons must be equal size to compare");
 			return confidenceValue;
 		}
-		if (a.getImage().length < MIN_IMAGE_LENGTH_TO_CONSIDER) {
-			return 0;
+		if (a.getImage().length < p.getImage().length * MIN_PATTERN_SUBSECTION_PERCENTAGE) {
+			return ConfidenceValue.BELOW_SUBSECTION_MIN.getValue();
 		}
 		for (int i = 0; i < a.getImage().length; i++) {
 			if (a.getImage()[i] == b.getImage()[i]) {

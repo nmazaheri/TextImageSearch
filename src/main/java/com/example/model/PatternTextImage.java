@@ -35,6 +35,7 @@ public class PatternTextImage extends TextImage {
 			case BEST_MATCH:
 				return enhanceColor;
 			case UNKNOWN:
+			case BELOW_SUBSECTION_MIN:
 				return UNKNOWN_COLOR;
 		}
 		return null;

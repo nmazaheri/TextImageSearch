@@ -6,7 +6,8 @@ package com.example.model;
 public enum ConfidenceValue {
 	UNKNOWN(-1),
 	CLEAN_NOISE(-2),
-	BEST_MATCH(-3);
+	BEST_MATCH(-3),
+	BELOW_SUBSECTION_MIN(-4);
 
 	private final int value;
 
