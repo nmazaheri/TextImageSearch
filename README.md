@@ -26,8 +26,7 @@ In the below images red and pink represent the points removed by post filtering
 * Performs filtering on the confidence values which removes lone points and renders a "final" image
 
 
-### What is next
+### Potential Improvements
 - Add JUnit tests
 - Method level documentation
-- Weigh edges heavier since more data is unknown
 - A single output image with all patterns represented
