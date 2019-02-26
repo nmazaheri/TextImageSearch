@@ -15,10 +15,10 @@ import com.example.model.TextImage;
  * Main application
  */
 public class Application {
-	public static final String IMAGE_NAME = "image";
-	public static final String PATTERN1_NAME = "pattern1";
-	public static final String PATTERN2_NAME = "pattern2";
-	public static final String DESTINATION_PATH = "/Users/nmazaheri/Documents/git/TextImageSearch/";
+	private static final String IMAGE_NAME = "image";
+	private static final String PATTERN1_NAME = "pattern1";
+	private static final String PATTERN2_NAME = "pattern2";
+	private static final String DESTINATION_PATH = "doc/";
 	private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
 
 	public static void main(String[] args) throws Exception {

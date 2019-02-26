@@ -10,11 +10,14 @@ import com.example.confidence.ConfidenceStats;
 import com.example.model.ConfidenceResult;
 import com.example.model.ConfidenceValue;
 import com.example.model.PatternTextImage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Renders a .png image using confidence values. Can handle unique colors using patterns and enumerated {@link ConfidenceValue}
  */
 public class ImageCreator {
+	private static final Logger LOGGER = LoggerFactory.getLogger(ImageCreator.class);
 	private static final String IMG_EXTENSION = "png";
 	private ConfidenceStats stats;
 	private String writePath;
@@ -27,6 +30,7 @@ public class ImageCreator {
 	public void writeImage(PatternTextImage pattern, ConfidenceResult confidenceResult, String uniqueFileId) throws IOException {
 		final BufferedImage image = createBufferedImage(confidenceResult, pattern);
 		String filePath = generateImagePath(pattern.getFilepath(), uniqueFileId);
+		LOGGER.info("writing image to " + filePath);
 		ImageIO.write(image, IMG_EXTENSION, new File(filePath));
 	}
 
