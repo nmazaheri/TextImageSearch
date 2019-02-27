@@ -1,6 +1,7 @@
 package com.example.model;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -11,16 +12,16 @@ import org.slf4j.LoggerFactory;
  */
 public class TextImage {
 
-	public static final String EXTENSION = ".txt";
+	private static final String EXTENSION = ".txt";
 	private static final Logger LOGGER = LoggerFactory.getLogger(TextImage.class);
 	private int width;
 	private int height;
 	private char[] image;
 
-	public TextImage(String filepath) throws Exception {
+	public TextImage(String filepath) {
 		ClassLoader classLoader = getClass().getClassLoader();
 		try {
-			image = IOUtils.toCharArray(classLoader.getResourceAsStream(filepath + EXTENSION));
+			image = IOUtils.toCharArray(Objects.requireNonNull(classLoader.getResourceAsStream(filepath + EXTENSION)));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -29,7 +30,7 @@ public class TextImage {
 		setHeight();
 	}
 
-	public TextImage(int width, int height, char[] image) {
+	private TextImage(int width, int height, char[] image) {
 		this.width = width;
 		this.height = height;
 		this.image = image;
@@ -80,7 +81,7 @@ public class TextImage {
 		return new TextImage(width, height, subSection);
 	}
 
-	public Character getChar(int x, int y) {
+	private Character getChar(int x, int y) {
 		if (isValidPoint(x, y)) {
 			int pos = x + y * (width + 1);
 			return image[pos];
